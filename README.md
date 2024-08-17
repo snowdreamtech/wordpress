@@ -1,8 +1,8 @@
-# wordpress
+# Wordpress
 
-[![wordpress](http://dockeri.co/image/snowdreamtech/wordpress)](https://hub.docker.com/r/snowdreamtech/wordpress)
+[![Wordpress](http://dockeri.co/image/snowdreamtech/wordpress)](https://hub.docker.com/r/snowdreamtech/wordpress)
 
-Docker Image packaging for wordpress. (amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le,riscv64, s390x)
+Docker Image packaging for Wordpress. (amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le,riscv64, s390x)
 
 # Usage
 
@@ -16,6 +16,11 @@ To help you get started creating a container from this image you can either use 
 docker run -d \
   --name=wordpress \
   -e TZ=Asia/Shanghai \
+  -e WORDPRESS_DB_NAME='wordpress' \
+  -e WORDPRESS_DB_USER='test' \
+  -e WORDPRESS_DB_PASSWORD='test' \
+  -e WORDPRESS_DB_HOST='mariadb' \
+  -p 80:80 \
   --restart unless-stopped \
   snowdreamtech/wordpress:latest
 ```
@@ -26,7 +31,17 @@ docker run -d \
 docker run -d \
   --name=wordpress \
   -e TZ=Asia/Shanghai \
-  -v /path/to/data:/path/to/data \
+  -e WORDPRESS_DB_NAME='wordpress' \
+  -e WORDPRESS_DB_USER='test' \
+  -e WORDPRESS_DB_PASSWORD='test' \
+  -e WORDPRESS_DB_HOST='mariadb' \
+  -e WORDPRESS_DB_CHARSET='utf8mb4' \
+  -e WORDPRESS_DB_COLLATE='utf8mb4_unicode_ci' \
+  -p 80:80 \
+  -v /path/to/languages:/var/lib/nginx/html/wp-content/languages \
+  -v /path/to/plugins:/var/lib/nginx/html/wp-content/plugins \
+  -v /path/to/themes:/var/lib/nginx/html/wp-content/themes \
+  -v /path/to/uploads:/var/lib/nginx/html/wp-content/uploads \
   --restart unless-stopped \
   snowdreamtech/wordpress:latest
 ```
@@ -44,6 +59,12 @@ services:
     container_name: wordpress
     environment:
       - TZ=Asia/Shanghai
+      - WORDPRESS_DB_NAME='wordpress'
+      - WORDPRESS_DB_USER='test'
+      - WORDPRESS_DB_PASSWORD='test'
+      - WORDPRESS_DB_HOST='mariadb'
+    ports:
+      - 80:80
     restart: unless-stopped
 ```
 
@@ -58,8 +79,19 @@ services:
     container_name: wordpress
     environment:
       - TZ=Asia/Shanghai
+      - WORDPRESS_DB_NAME='wordpress'
+      - WORDPRESS_DB_USER='test'
+      - WORDPRESS_DB_PASSWORD='test'
+      - WORDPRESS_DB_HOST='mariadb'
+      - WORDPRESS_DB_CHARSET='utf8mb4'
+      - WORDPRESS_DB_COLLATE='utf8mb4_unicode_ci'
+    ports:
+      - 80:80
     volumes:
-      - /path/to/data:/path/to/data
+      - /path/to/languages:/var/lib/nginx/html/wp-content/languages
+      - /path/to/plugins:/var/lib/nginx/html/wp-content/plugins
+      - /path/to/themes:/var/lib/nginx/html/wp-content/themes 
+      - /path/to/uploads:/var/lib/nginx/html/wp-content/uploads
     restart: unless-stopped
 ```
 
