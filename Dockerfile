@@ -19,11 +19,16 @@ ENV WORDPRESS_VERSION=6.6.1 \
     WORDPRESS_NONCE_SALT='' \
     WORDPRESS_TABLE_PREFIX='wp_' \
     WORDPRESS_DEBUG=0 \
-    WORDPRESS_LANGUAGES_PATH=/var/lib/nginx/html/wp-content/languages 
+    WORDPRESS_SRC_PATH=/usr/src/wordpress \
+    WORDPRESS_PATH=/var/lib/nginx/html \
+    WORDPRESS_LANGUAGES_PATH=${WORDPRESS_PATH}/html/wp-content/languages 
 
-RUN wget -c https://github.com/WordPress/WordPress/archive/refs/tags/${WORDPRESS_VERSION}.tar.gz \
+RUN mkdir -p ${WORDPRESS_SRC_PATH} \
+    && chown -Rfv nginx:nginx ${WORDPRESS_SRC_PATH} \
+    && wget -c https://github.com/WordPress/WordPress/archive/refs/tags/${WORDPRESS_VERSION}.tar.gz \
     && tar zxvf ${WORDPRESS_VERSION}.tar.gz \
-    && cp -rfv WordPress-${WORDPRESS_VERSION}/* /var/lib/nginx/html \
+    && cp -rfv WordPress-${WORDPRESS_VERSION}/* ${WORDPRESS_SRC_PATH} \
+    && cp -rfv WordPress-${WORDPRESS_VERSION}/* ${WORDPRESS_PATH} \
     && rm -rfv ${WORDPRESS_VERSION}.tar.gz \
     && rm -rfv WordPress-${WORDPRESS_VERSION} \
     && mkdir -p ${WORDPRESS_LANGUAGES_PATH} \
