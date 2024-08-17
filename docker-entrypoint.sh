@@ -43,7 +43,8 @@ escape(){
 
 # wordpress
 if [ ! -f ${WORDPRESS_CONFIG_FILE} ]; then {
-    cp -v ${WORDPRESS_CONFIG_SAMPLE_FILE} ${WORDPRESS_CONFIG_FILE}
+    cp -r ${WORDPRESS_CONFIG_SAMPLE_FILE} ${WORDPRESS_CONFIG_FILE}
+    chown -R nginx:nginx ${WORDPRESS_CONFIG_FILE}
 
     # wordpress security salt
     if [ -z "${WORDPRESS_AUTH_KEY}" ]; then {
@@ -148,6 +149,57 @@ if [ -n "${WORDPRESS_DEBUG}" ]; then {
     }
     fi
 }
+fi
+
+# copy plugins and themes if necessarily
+# https://github.com/docker-library/docs/tree/master/wordpress#include-pre-installed-themes--plugins
+if [ -z "$( ls ${WORDPRESS_PATH}/wp-content/themes )" ]; then
+   cp -r ${WORDPRESS_SRC_PATH}/wp-content/themes/*  ${WORDPRESS_PATH}/wp-content/themes 
+fi
+
+if [ -z "$( ls ${WORDPRESS_PATH}/wp-content/plugins )" ]; then
+   cp -r ${WORDPRESS_SRC_PATH}/wp-content/plugins/*  ${WORDPRESS_PATH}/wp-content/plugins 
+fi
+
+# chown nginx:nginx 
+if [ ! -d "${WORDPRESS_PATH}/wp-content/languages" ]; then
+  mkdir -p ${WORDPRESS_PATH}/wp-content/languages
+fi
+
+if [ ! -d "${WORDPRESS_PATH}/wp-content/uploads" ]; then
+  mkdir -p ${WORDPRESS_PATH}/wp-content/uploads
+fi
+
+if [ ! -d "${WORDPRESS_PATH}/wp-content/themes" ]; then
+  mkdir -p ${WORDPRESS_PATH}/wp-content/themes
+fi
+
+if [ ! -d "${WORDPRESS_PATH}/wp-content/plugins" ]; then
+  mkdir -p ${WORDPRESS_PATH}/wp-content/plugins
+fi
+
+if [ ! -d "${WORDPRESS_PATH}/wp-content/upgrade" ]; then
+  mkdir -p ${WORDPRESS_PATH}/wp-content/upgrade
+fi
+
+if [ "$(stat -c %U ${WORDPRESS_PATH}/wp-content/languages)" != "nginx" ]; then
+    chown -R nginx:nginx ${WORDPRESS_PATH}/wp-content/languages 
+fi
+
+if [ "$(stat -c %U ${WORDPRESS_PATH}/wp-content/uploads)" != "nginx" ]; then
+    chown -R nginx:nginx ${WORDPRESS_PATH}/wp-content/uploads 
+fi
+
+if [ "$(stat -c %U ${WORDPRESS_PATH}/wp-content/themes)" != "nginx" ]; then
+    chown -R nginx:nginx ${WORDPRESS_PATH}/wp-content/themes 
+fi
+
+if [ "$(stat -c %U ${WORDPRESS_PATH}/wp-content/plugins)" != "nginx" ]; then
+    chown -R nginx:nginx ${WORDPRESS_PATH}/wp-content/plugins 
+fi
+
+if [ "$(stat -c %U ${WORDPRESS_PATH}/wp-content/upgrade)" != "nginx" ]; then
+    chown -R nginx:nginx ${WORDPRESS_PATH}/wp-content/upgrade 
 fi
 
 # nginx 
