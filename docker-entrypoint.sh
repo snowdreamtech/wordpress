@@ -183,6 +183,7 @@ if [ ! -d "${WORDPRESS_PATH}/wp-content/upgrade" ]; then
 fi
 
 if [ "$(stat -c %U ${WORDPRESS_PATH}/wp-content/languages)" != "nginx" ]; then
+    touch ${WORDPRESS_PATH}/wp-content/languages/.1
     chown -R nginx:nginx ${WORDPRESS_PATH}/wp-content/languages 
 fi
 
