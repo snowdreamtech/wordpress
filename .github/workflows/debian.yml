@@ -109,9 +109,9 @@ jobs:
         uses: docker/metadata-action@v5.6.1
         with:
           images: |
-            name=snowdreamtech/base,enable=true
-            name=ghcr.io/snowdreamtech/base,enable=true
-            name=quay.io/snowdreamtech/base,enable=true
+            name=snowdreamtech/wordpress,enable=true
+            name=ghcr.io/snowdreamtech/wordpress,enable=true
+            name=quay.io/snowdreamtech/wordpress,enable=true
           flavor: |
             latest=false  
             prefix=
