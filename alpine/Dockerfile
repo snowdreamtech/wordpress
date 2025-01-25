@@ -1,4 +1,4 @@
-FROM snowdreamtech/alpine:3.21.0
+FROM snowdreamtech/php:8.4.2-fpm-alpine3.21
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/wordpress" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="3.21.0" \
+    org.opencontainers.image.version="6.6.1" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/wordpress"
     
 # Switch to the user
@@ -23,6 +23,26 @@ ENV KEEPALIVE=1 \
     # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
     # which are port numbers less than 1024. 
     CAP_NET_BIND_SERVICE=0 
+
+ENV WORDPRESS_VERSION=6.6.1 \
+    WORDPRESS_DB_NAME='test' \
+    WORDPRESS_DB_USER='root' \
+    WORDPRESS_DB_PASSWORD='' \
+    WORDPRESS_DB_HOST='mariadb' \
+    WORDPRESS_DB_CHARSET='utf8mb4' \
+    WORDPRESS_DB_COLLATE='utf8mb4_unicode_ci' \
+    WORDPRESS_AUTH_KEY='' \
+    WORDPRESS_SECURE_AUTH_KEY='' \
+    WORDPRESS_LOGGED_IN_KEY='' \
+    WORDPRESS_NONCE_KEY='' \
+    WORDPRESS_AUTH_SALT='' \
+    WORDPRESS_SECURE_AUTH_SALT='' \
+    WORDPRESS_LOGGED_IN_SALT='' \
+    WORDPRESS_NONCE_SALT='' \
+    WORDPRESS_TABLE_PREFIX='wp_' \
+    WORDPRESS_DEBUG=0 \
+    WORDPRESS_SRC_PATH=/usr/src/wordpress \
+    WORDPRESS_PATH=/var/lib/nginx/html
 
 ARG GID=1000 \
     UID=1000  \
@@ -42,8 +62,15 @@ RUN if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
     # setcap 'cap_net_bind_service=+ep' `which nginx`; \
     fi
 
-RUN apk add --no-cache \
-    vim
+RUN mkdir -p ${WORDPRESS_SRC_PATH} \
+    && mkdir -p ${WORDPRESS_PATH} \
+    && wget -c https://github.com/WordPress/WordPress/archive/refs/tags/${WORDPRESS_VERSION}.tar.gz \
+    && tar zxvf ${WORDPRESS_VERSION}.tar.gz \
+    && cp -rfv WordPress-${WORDPRESS_VERSION}/* ${WORDPRESS_SRC_PATH} \
+    && cp -rfv WordPress-${WORDPRESS_VERSION}/* ${WORDPRESS_PATH} \
+    && rm -rfv ${WORDPRESS_VERSION}.tar.gz \
+    && rm -rfv WordPress-${WORDPRESS_VERSION} \
+    && chown -Rfv nginx:nginx ${WORDPRESS_PATH} 
 
 # Switch to the user
 USER ${USER}

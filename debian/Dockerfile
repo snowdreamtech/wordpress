@@ -1,4 +1,4 @@
-FROM snowdreamtech/debian:12.8.0
+FROM snowdreamtech/php:8.2.26-fpm-bookworm
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/wordpress" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="12.8" \
+    org.opencontainers.image.version="6.6.1" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/wordpress"
     
 # Switch to the user
@@ -23,6 +23,26 @@ ENV KEEPALIVE=1 \
     # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
     # which are port numbers less than 1024. 
     CAP_NET_BIND_SERVICE=0
+    
+ENV WORDPRESS_VERSION=6.6.1 \
+    WORDPRESS_DB_NAME='test' \
+    WORDPRESS_DB_USER='root' \
+    WORDPRESS_DB_PASSWORD='' \
+    WORDPRESS_DB_HOST='mariadb' \
+    WORDPRESS_DB_CHARSET='utf8mb4' \
+    WORDPRESS_DB_COLLATE='utf8mb4_unicode_ci' \
+    WORDPRESS_AUTH_KEY='' \
+    WORDPRESS_SECURE_AUTH_KEY='' \
+    WORDPRESS_LOGGED_IN_KEY='' \
+    WORDPRESS_NONCE_KEY='' \
+    WORDPRESS_AUTH_SALT='' \
+    WORDPRESS_SECURE_AUTH_SALT='' \
+    WORDPRESS_LOGGED_IN_SALT='' \
+    WORDPRESS_NONCE_SALT='' \
+    WORDPRESS_TABLE_PREFIX='wp_' \
+    WORDPRESS_DEBUG=0 \
+    WORDPRESS_SRC_PATH=/usr/src/wordpress \
+    WORDPRESS_PATH=/usr/share/nginx/html
 
 ARG GID=1000 \
     UID=1000  \
@@ -57,8 +77,15 @@ RUN set -eux \
 
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
-    vim \
+    && mkdir -p ${WORDPRESS_SRC_PATH} \
+    && mkdir -p ${WORDPRESS_PATH} \
+    && wget -c https://github.com/WordPress/WordPress/archive/refs/tags/${WORDPRESS_VERSION}.tar.gz \
+    && tar zxvf ${WORDPRESS_VERSION}.tar.gz \
+    && cp -rfv WordPress-${WORDPRESS_VERSION}/* ${WORDPRESS_SRC_PATH} \
+    && cp -rfv WordPress-${WORDPRESS_VERSION}/* ${WORDPRESS_PATH} \
+    && rm -rfv ${WORDPRESS_VERSION}.tar.gz \
+    && rm -rfv WordPress-${WORDPRESS_VERSION} \
+    && chown -Rfv nginx:nginx ${WORDPRESS_PATH} \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
     && rm -rf /var/lib/apt/lists/* \
