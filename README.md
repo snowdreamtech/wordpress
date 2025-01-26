@@ -19,7 +19,7 @@ docker run -d \
   -e WORDPRESS_DB_NAME='wordpress' \
   -e WORDPRESS_DB_USER='test' \
   -e WORDPRESS_DB_PASSWORD='test' \
-  -e WORDPRESS_DB_HOST='mariadb' \
+  -e WORDPRESS_DB_HOST='db' \
   -p 80:80 \
   --restart unless-stopped \
   snowdreamtech/wordpress:latest
@@ -34,7 +34,7 @@ docker run -d \
   -e WORDPRESS_DB_NAME='wordpress' \
   -e WORDPRESS_DB_USER='test' \
   -e WORDPRESS_DB_PASSWORD='test' \
-  -e WORDPRESS_DB_HOST='mariadb' \
+  -e WORDPRESS_DB_HOST='db' \
   -e WORDPRESS_DB_CHARSET='utf8mb4' \
   -e WORDPRESS_DB_COLLATE='utf8mb4_unicode_ci' \
   -p 80:80 \
@@ -62,7 +62,7 @@ services:
       - WORDPRESS_DB_NAME='wordpress'
       - WORDPRESS_DB_USER='test'
       - WORDPRESS_DB_PASSWORD='test'
-      - WORDPRESS_DB_HOST='mariadb'
+      - WORDPRESS_DB_HOST='db'
     ports:
       - 80:80
     restart: unless-stopped
@@ -82,7 +82,7 @@ services:
       - WORDPRESS_DB_NAME='wordpress'
       - WORDPRESS_DB_USER='test'
       - WORDPRESS_DB_PASSWORD='test'
-      - WORDPRESS_DB_HOST='mariadb'
+      - WORDPRESS_DB_HOST='db'
       - WORDPRESS_DB_CHARSET='utf8mb4'
       - WORDPRESS_DB_COLLATE='utf8mb4_unicode_ci'
     ports:

@@ -28,7 +28,7 @@ ENV WORDPRESS_VERSION=6.6.1 \
     WORDPRESS_DB_NAME='test' \
     WORDPRESS_DB_USER='root' \
     WORDPRESS_DB_PASSWORD='' \
-    WORDPRESS_DB_HOST='mariadb' \
+    WORDPRESS_DB_HOST='db' \
     WORDPRESS_DB_CHARSET='utf8mb4' \
     WORDPRESS_DB_COLLATE='utf8mb4_unicode_ci' \
     WORDPRESS_AUTH_KEY='' \
@@ -73,10 +73,10 @@ RUN mkdir -p ${WORDPRESS_SRC_PATH} \
     && chown -Rfv nginx:nginx ${WORDPRESS_PATH} 
 
 # Switch to the user
-USER ${USER}
+USER nginx
 
 # Set the workdir
-WORKDIR ${WORKDIR}
+WORKDIR /var/lib/nginx/html
 
 COPY docker-entrypoint.sh /usr/local/bin/
 

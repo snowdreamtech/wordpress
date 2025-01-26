@@ -28,7 +28,7 @@ ENV WORDPRESS_VERSION=6.6.1 \
     WORDPRESS_DB_NAME='test' \
     WORDPRESS_DB_USER='root' \
     WORDPRESS_DB_PASSWORD='' \
-    WORDPRESS_DB_HOST='mariadb' \
+    WORDPRESS_DB_HOST='db' \
     WORDPRESS_DB_CHARSET='utf8mb4' \
     WORDPRESS_DB_COLLATE='utf8mb4_unicode_ci' \
     WORDPRESS_AUTH_KEY='' \
@@ -47,7 +47,7 @@ ENV WORDPRESS_VERSION=6.6.1 \
 ARG GID=1000 \
     UID=1000  \
     USER=root \
-    WORKDIR=/root
+    WORKDIR=/usr/share/nginx/html
 
 # Create a user with UID and GID
 RUN set -eux \
@@ -93,7 +93,7 @@ RUN set -eux \
     && rm -rf /var/tmp/*
 
 # Switch to the user
-USER ${USER}
+USER nginx
 
 # Set the workdir
 WORKDIR ${WORKDIR}
