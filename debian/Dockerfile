@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/wordpress" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="6.6.1" \
+    org.opencontainers.image.version="6.6.2" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/wordpress"
     
 # Switch to the user
@@ -24,7 +24,7 @@ ENV KEEPALIVE=1 \
     # which are port numbers less than 1024. 
     CAP_NET_BIND_SERVICE=0
     
-ENV WORDPRESS_VERSION=6.6.1 \
+ENV WORDPRESS_VERSION=6.6.2 \
     WORDPRESS_DB_NAME='test' \
     WORDPRESS_DB_USER='root' \
     WORDPRESS_DB_PASSWORD='' \
